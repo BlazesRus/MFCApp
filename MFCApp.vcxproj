@@ -77,15 +77,7 @@
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Label="GlobalsPart2">
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules />
-    <CodeAnalysisRuleAssemblies />
-    <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(BlazesSharedCode);</IncludePath>
-	<PreferredToolArchitecture>x64</PreferredToolArchitecture>
-  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <!-- 142 for VS2019(Default);143 for VS2022-->
   <PropertyGroup Condition="'$(Configuration)'!='VS2022Debug' And '$(Configuration)'!='VS2022Release'" Label="Configuration">
     <!-- And '$(Platform)'!='Release|ARM64' And '$(Platform)'!='Release|ARM'-->
@@ -102,7 +94,6 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
@@ -111,11 +102,20 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <BlazesSharedCode>C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode</BlazesSharedCode>
-    <!--<MFCAppDir>$(BlazesSharedCode)\MFCApp</BlazesSharedCode>-->
+    <BlazesSharedCode Condition="Exists('C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode')">C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode</BlazesSharedCode>
+    <BlazesSharedCode Condition="!Exists('C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode')">..</BlazesSharedCode>
     <MFC>C:\UserFiles\GitHub\MFC</MFC>
     <BoostDir>C:/UserFiles/ProgrammingLibraries/BoostLib/</BoostDir>
     <ParallelMap>C:/UserFiles/GitHub/Parallel-Hashmap/</ParallelMap>
+  </PropertyGroup>
+  <PropertyGroup Label="GlobalsPart2">
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(BlazesSharedCode);</IncludePath>
+	<PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'">
     <LinkIncremental>true</LinkIncremental>
@@ -123,35 +123,6 @@
   <PropertyGroup Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
-  <!--
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VS2022Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VS2022Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VS2022Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VS2022Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SDIDebug|x64' Or '$(Configuration)|$(Platform)'=='MDIDebug_TextView|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  -->
   <ItemDefinitionGroup Label="Windows Item Definition Group">
     <!-- Condition="'$(Platform)'=='Win32' Or '$(Platform)'=='x64'"-->
     <ClCompile>
@@ -197,76 +168,43 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup Label="SharedCodeIncludes">
-    <!--
-    <ClInclude Include="$(BlazesSharedCode)\tsl\ordered_hash.h" />
-    <ClInclude Include="$(BlazesSharedCode)\tsl\ordered_map.h" />
-    <ClInclude Include="$(BlazesSharedCode)\tsl\ordered_set.h" />
-    <ClCompile Include="$(BlazesSharedCode)\OtherFunctions\StringFunctions.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="$(BlazesSharedCode)\OtherFunctions\VariableConversionFunctions.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="$(BlazesSharedCode)\VariableLists\VariableTypeLists.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="$(BlazesSharedCode)\VariableLists\VariableVectorFunctions.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClInclude Include="$(BlazesSharedCode)\AltNum\MediumDec.h" />
-
-    <ClInclude Include="$(BlazesSharedCode)\OtherFunctions\StringFunctions.h" />
-    <ClInclude Include="$(BlazesSharedCode)\OtherFunctions\VariableConversionFunctions.h" />
-
-    <ClInclude Include="$(BlazesSharedCode)\VariableLists\VariableVectorFunctions.h" />
-
-    <ClInclude Include="$(BlazesSharedCode)\Databases\DataDictionary.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="$(BlazesSharedCode)\Databases\DataNode.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="$(BlazesSharedCode)\Databases\CustomOrderedDictionary.h" />
-    <ClInclude Include="$(BlazesSharedCode)\Databases\ArgStringList.h" />
-    <ClInclude Include="$(BlazesSharedCode)\Databases\ArgList.h" />
-    <ClInclude Include="$(BlazesSharedCode)\Databases\UIntDic.h" />
-    <ClInclude Include="$(BlazesSharedCode)\Databases\IniRegistry.h" />
-    <ClInclude Include="$(BlazesSharedCode)\OtherFunctions\MFCMacros.h" />
-    <ClInclude Include="$(BlazesSharedCode)\OtherFunctions\MFCMacrosV2.h" />
-
-    <ClInclude Include="$(BlazesSharedCode)\VariableLists\VariableTypeLists.h" />
--->
+    <ClInclude Include="..\DLLAPI.h" />
+    <ClInclude Include="..\OtherFunctions\MFCMacros.h" />
+    <ClInclude Include="..\OtherFunctions\MFCMacrosV3.h" />
+    <ClInclude Include="..\OtherFunctions\MFCBaseOneMacros.h" />
+    <ClInclude Include="..\OtherFunctions\MFCBaseTwoMacros.h" />
+    <ClInclude Include="..\OtherFunctions\MFCOneArgMacros.h" />
+    <ClInclude Include="..\OtherFunctions\MFCTwoArgMacros.h" />
+    <ClInclude Include="..\tsl\ordered_hash.h" />
+    <ClInclude Include="..\tsl\ordered_map.h" />
     <ClInclude Include="..\Databases\ArgList.h" />
     <ClInclude Include="..\Databases\ArgStringList.h" />
     <ClInclude Include="..\Databases\CustomDictionary.h" />
     <ClInclude Include="..\Databases\CustomOrderedDictionary.h" />
-    <ClInclude Include="..\DLLAPI.h" />
-    <ClInclude Include="..\OtherFunctions\MFCBaseOneMacros.h" />
-    <ClInclude Include="..\OtherFunctions\MFCBaseTwoMacros.h" />
-    <ClInclude Include="..\OtherFunctions\MFCMacrosV3.h" />
-    <ClInclude Include="..\OtherFunctions\MFCOneArgMacros.h" />
-    <ClInclude Include="..\OtherFunctions\MFCTwoArgMacros.h" />
-    <ClInclude Include="..\OtherFunctions\VariableConversionFunctions.h" />
-    <ClInclude Include="..\tsl\ordered_map.h" />
-    <ClInclude Include="..\VariableLists\StringVectorList.h" />
+
     <ClInclude Include="..\VariableLists\VariableList.h" />
+    <ClInclude Include="..\VariableLists\StringVectorList.h" />
+    <ClCompile Include="..\VariableLists\StringVectorList.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClInclude Include="..\VariableLists\VariableTypeLists.h" />
+    <ClCompile Include="..\VariableLists\VariableTypeLists.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+
     <ClInclude Include="..\OtherFunctions\StringFunctions.h" />
     <ClCompile Include="..\OtherFunctions\StringFunctions.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClInclude Include="..\OtherFunctions\VariableConversionFunctions.h" />
     <ClCompile Include="..\OtherFunctions\VariableConversionFunctions.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VS2022Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VS2022Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VS2022Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='VS2022Release|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\VariableLists\StringVectorList.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClInclude Include="..\AltNum\MediumDec.h" />
+
+    <ClInclude Include="..\Databases\UIntDic.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.hpp" />
@@ -306,44 +244,6 @@
     </ClInclude>
     <ClCompile Include="OutputWnd.cpp">
       <ExcludedFromBuild>false</ExcludedFromBuild>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="ContextMenu.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="ContextMenu.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="TextViewProcessing.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClCompile Include="TextViewProcessing.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="TextView.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClCompile Include="TextView.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="XMLViewProcessing.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClCompile Include="XMLViewProcessing.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="XMLView.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClCompile Include="XMLView.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="DFBody2DView.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClCompile Include="DFBody2DView.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

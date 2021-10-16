@@ -11,7 +11,7 @@
 - BlazesRusAppSetting_UseIniElementV3Alternative = Use alternative element map for BlazesRusAppSetting_EnableMapFocusedAppSettings elements(none of code implemented yet)
 - BlazesMFCAppIni_EnableFloat = Adds storage of float Elements
 - BlazesMFCAppIni_EnableAltNum = Adds storage of MediumDec Elements
-- BlazesMFCAppIni_EnableVoid = Adds storage of void Elements
+- BlazesMFCAppIni_DisableVoid = Disables storage of void Elements
 - BlazesMFCAppIni_StoreAllSettingsAsString = Only include string settings for dynamic settings(Not Implemented)
 - BlazesRusAppSetting_RetainIniOrder
 - MFCApp_UseOldIniDataFormatForSettings
@@ -58,30 +58,49 @@
 #include "..\OtherFunctions\FileOps.hpp"
 
 #if defined(BlazesRusAppSetting_EnableListFocusedAppSettings) || defined(BlazesRusAppSetting_EnableMapFocusedAppSettings)
-#ifdef BlazesRusAppSetting_UseIniElementV3Alternative
-#else
+enum class IniElementType : __int8
+{
+    StringVal = 0,//String Value Stored
+    BoolVal = 1,//Boolean True/False Value
+    IntVal = 2,//Integer Value
+#ifdef BlazesMFCAppIni_EnableAltNum
+    AltNumVal = 3,//MediumDec Value(if BlazesMFCAppIni_EnableAltNum enabled)
+#endif
+#ifdef BlazesMFCAppIni_EnableFloat
+    FloatVal = 4,//float Value(if BlazesMFCAppIni_EnableFloat enabled)
+#endif
+#ifndef BlazesMFCAppIni_DisableVoid
+    VoidVal = 5,//Void Value
+#endif
+#ifdef BlazesMFCAppIni_EnableDouble
+    DoubleVal = 6,//Double Value(Not Implemented Right now)(if BlazesMFCAppIni_EnableDouble enabled)
+#endif
+    NotFound = -1//Not Found(if searching values)
+};
+#endif
+
+#if defined(BlazesRusAppSetting_EnableListFocusedAppSettings)
 class DLL_API IniElementV3
 {
 public:
     //0 = String Value Stored, 1 = Bool, 2 = Int, 3 = MediumDec(if BlazesMFCAppIni_EnableAltNum enabled), 4 = float(if BlazesMFCAppIni_EnableFloat enabled), 5 = Void(No Parameters), 6=AltDec
     //-1 = Not Found(if searching values)
-    __int8 IniTypeStored;
+    IniElementType IniTypeStored;
     //If -1, then IniIndex not set yet
     __int8 IniIndex;
-    IniElementV3(__int8 typeStored, __int8 index)
+    IniElementV3(IniElementType typeStored, __int8 index)
     {
         IniTypeStored = typeStored; IniIndex = index;
     }
-    IniElementV3(__int8 typeStored)
+    IniElementV3(IniElementType typeStored)
     {
         IniTypeStored = typeStored; IniIndex = -1;
     }
     IniElementV3()//Defaults to void type if no values set
     {
-        IniTypeStored = 5; IniIndex = -1;
+        IniTypeStored = IniElementType::VoidVal; IniIndex = -1;
     }
 };
-#endif
 #endif
 
 /* MFCApp_UseIniTesterSettings blocks of code can be replaced with hard-coded Variables inside derived/inherited classes from AppSettings */
@@ -93,16 +112,6 @@ class DLL_API AppSettings
 {
 public:
     std::string IniFilePath="";
-#if defined(BlazesRusAppSetting_EnableListFocusedAppSettings) || (defined(BlazesRusAppSetting_EnableMapFocusedAppSettings)&&!defined(BlazesRusAppSetting_UseIniElementV3Alternative))
-    const IniElementV3 NewBoolVal = 1;
-    const IniElementV3 NewIntVal = 2;
-    const IniElementV3 NewMediumDecVal = 3;
-#ifdef BlazesMFCAppIni_EnableFloat
-    const IniElementV3 NewFloatVal = 4;
-#endif
-    const IniElementV3 NewVoidVal = 5;
-    const IniElementV3 BlankStringVal = 0;
-#endif
 #ifdef BlazesRusAppSetting_EnableListFocusedAppSettings
     /// <summary>
     /// The IniSettings with Int Values
@@ -129,6 +138,29 @@ public:
 #endif
 
     StringVectorList StringSettings = {};
+
+    /// <summary>
+    /// IniSettings with string values and key linkage to IniSettings
+    /// </summary>
+#if defined(BlazesRusAppSetting_RetainIniOrder)
+    CustomOrderedDictionary<std::string, IniElementV3> self = {};
+#else
+    CustomDictionary<std::string, IniElementV3> self = {};
+#endif
+
+    /// <summary>
+    /// Checks if element exists.
+    /// </summary>
+    /// <param name="Value">The value.</param>
+    /// <returns>bool.</returns>
+    IniElementV3 ReturnIndexIfElementExists(std::string Value)
+    {
+        auto elementInfo = self.find(Value);
+        if (self.find(Value) == self.end())
+            return IniElementV3();
+        else
+            return elementInfo->second;
+    }
 
 #elif BlazesRusAppSetting_EnableMapFocusedAppSettings
 /*  //LNK2005 error causes by these static definitions when used in MFC Applications
@@ -194,20 +226,18 @@ public:
 #endif
 
     CustomDictionary<std::string, MediumDec> StringSettings = {};
-#endif
-#if defined(BlazesRusAppSetting_EnableListFocusedAppSettings) || defined(BlazesRusAppSetting_EnableMapFocusedAppSettings)
+
     /// <summary>
     /// IniSettings with string values and key linkage to IniSettings
     /// </summary>
-#ifdef BlazesRusAppSetting_UseIniElementV3Alternative
-#else
 #if defined(BlazesRusAppSetting_RetainIniOrder)
-    CustomOrderedDictionary<std::string, IniElementV3> self = {};
+    CustomOrderedDictionary<std::string, IniElementType> self = {};
 #else
-    CustomDictionary<std::string, IniElementV3> self = {};
-#endif
+    CustomDictionary<std::string, IniElementType> self = {};
 #endif
 
+#endif
+#if defined(BlazesRusAppSetting_EnableListFocusedAppSettings) || defined(BlazesRusAppSetting_EnableMapFocusedAppSettings)
     /// <summary>
     /// Checks if element exists.
     /// </summary>
@@ -217,27 +247,6 @@ public:
     {
         return self.find(Value) != self.end();
     }
-    
-#ifndef BlazesRusAppSetting_UseIniElementV3Alternative
-    /// <summary>
-    /// Checks if element exists.
-    /// </summary>
-    /// <param name="Value">The value.</param>
-    /// <returns>bool.</returns>
-    IniElementV3 ReturnIndexIfElementExists(std::string Value)
-    {
-//#if defined(BlazesRusAppSetting_RetainIniOrder)
-//        iterator::CustomOrderedDictionary<std::string, IniElementV3> elementInfo;
-//#else
-//        //iterator::CustomDictionary<std::string, IniElementV3> elementInfo;
-//#endif
-        auto elementInfo = self.find(Value);
-        if(self.find(Value) == self.end())
-            return IniElementV3();
-        else
-            return elementInfo->second;
-    }
-#endif
     
     /// <summary>
     /// Returns number of dynamically stored INI elements contained within.
@@ -285,12 +294,18 @@ public:
         IntSettings = IntegerList{};
         BoolSettings = BoolList{};
 #ifdef BlazesMFCAppIni_EnableFloat
-
+        FloatSettings = VariableList<float>{};
 #endif
 #ifdef BlazesMFCAppIni_EnableAltNum
-
+        AltNumSetttins = VariableList<MediumDec>{};
 #endif
         StringSettings = StringVectorList{};
+
+#if defined(BlazesRusAppSetting_RetainIniOrder)
+        self = CustomOrderedDictionary<std::string, IniElementV3>({});
+#else
+        self = CustomDictionary<std::string, IniElementV3>({});
+#endif
 #elif defined(BlazesRusAppSetting_EnableMapFocusedAppSettings)
         IntSettings = CustomDictionary<std::string, int>({});
         BoolSettings = CustomDictionary<std::string, bool>({});
@@ -301,12 +316,11 @@ public:
         MediumDecSettings = CustomDictionary<std::string, MediumDec>({});
 #endif
         StringSettings = CustomDictionary<std::string, std::string>({});
-#endif
-#if defined(BlazesRusAppSetting_EnableListFocusedAppSettings) || defined(BlazesRusAppSetting_EnableMapFocusedAppSettings)
+
 #if defined(BlazesRusAppSetting_RetainIniOrder)
-    self = CustomOrderedDictionary<std::string, IniElementV3>({});
+        self = CustomOrderedDictionary<std::string, IniElementType>({});
 #else
-    self = CustomDictionary<std::string, IniElementV3>({});
+        self = CustomDictionary<std::string, IniElementType>({});
 #endif
 #endif
     };
@@ -324,7 +338,19 @@ public:
     /// <returns>bool.</returns>
     bool AddBoolSetting(std::string IniSetting, std::string IniValue)
     {
+#ifdef BlazesRusAppSetting_EnableListFocusedAppSettings
         IniElementV3 elementFound = ReturnIndexIfElementExists(IniSetting);
+        if (elementFound.IniIndex == -1)
+        {
+            __int8 Index = BoolSettings.size();
+            BoolSettings.Add(BlazesRusCode::VariableConversionFunctions::ReadBoolFromString(IniValue));
+            self.Add(IniSetting, IniElementV3(IniElementType::BoolVal,Index));
+            return true;
+        }
+        BoolSettings.setElementAt(elementFound.IniIndex, BlazesRusCode::VariableConversionFunctions::ReadBoolFromString(IniValue));
+        return false;
+#else
+#endif
     }
 
     /// <summary>
@@ -335,9 +361,22 @@ public:
     /// <returns>bool.</returns>
     bool AddIntSetting(std::string IniSetting, std::string IniValue)
     {
+#ifdef BlazesRusAppSetting_EnableListFocusedAppSettings
         IniElementV3 elementFound = ReturnIndexIfElementExists(IniSetting);
+        if (elementFound.IniIndex == -1)
+        {
+            __int8 Index = BoolSettings.size();
+            IntSettings.Add(BlazesRusCode::VariableConversionFunctions::ReadIntFromString(IniValue));
+            self.Add(IniSetting, IniElementV3(IniElementType::IntVal, Index));
+            return true;
+        }
+        IntSettings.setElementAt(elementFound.IniIndex, BlazesRusCode::VariableConversionFunctions::ReadIntFromString(IniValue));
+        return false;
+#else
+#endif
     }
 
+#ifdef BlazesMFCAppIni_EnableFloat
     /// <summary>
     /// Adds the float setting. Returns true if adds new setting; otherwise changes current matching Ini Setting and returns false.
     /// </summary>
@@ -346,9 +385,23 @@ public:
     /// <returns>bool.</returns>
     bool AddFloatSetting(std::string IniSetting, std::string IniValue)
     {
+#ifdef BlazesRusAppSetting_EnableListFocusedAppSettings
         IniElementV3 elementFound = ReturnIndexIfElementExists(IniSetting);
+        if (elementFound.IniIndex == -1)
+        {
+            __int8 Index = BoolSettings.size();
+            FloatSettings.Add(BlazesRusCode::VariableConversionFunctions::ReadFloatFromString(IniValue));
+            self.Add(IniSetting, IniElementV3(IniElementType::FloatVal, Index));
+            return true;
+        }
+        FloatSettings.setElementAt(elementFound.IniIndex, BlazesRusCode::VariableConversionFunctions::ReadFloatFromString(IniValue));
+        return false;
+#else
+#endif
     }
+#endif
 
+#ifdef BlazesMFCAppIni_EnableAltNum
     /// <summary>
     /// Adds the MediumDec setting. Returns true if adds new setting; otherwise changes current matching Ini Setting and returns false.
     /// </summary>
@@ -357,18 +410,41 @@ public:
     /// <returns>bool.</returns>
     bool AddAltNumSetting(std::string IniSetting, std::string IniValue)
     {
+#ifdef BlazesRusAppSetting_EnableListFocusedAppSettings
         IniElementV3 elementFound = ReturnIndexIfElementExists(IniSetting);
+        if (elementFound.IniIndex == -1)
+        {
+            __int8 Index = BoolSettings.size();
+            AltNumSettings.Add(IniValue);
+            self.Add(IniSetting, IniElementV3(IniElementType::AltNumVal, Index));
+            return true;
+        }
+        AltNumSettings.setElementAt(elementFound.IniIndex, IniValue);
+        return false;
+#else
+#endif
     }
+#endif
 
     /// <summary>
-    /// Adds the boolean setting. Returns true if adds new setting; otherwise changes current matching Ini Setting and returns false.
+    /// Adds the Void setting. Returns true if adds new setting; otherwise returns false.
     /// </summary>
     /// <param name="IniSetting">The ini setting.</param>
     /// <param name="IniValue">The ini value.</param>
     /// <returns>bool.</returns>
-    bool AddVoidSetting(std::string IniSetting, std::string IniValue)
+    bool AddVoidSetting(std::string IniSetting)
     {
+#ifdef BlazesRusAppSetting_EnableListFocusedAppSettings
         IniElementV3 elementFound = ReturnIndexIfElementExists(IniSetting);
+        if (elementFound.IniIndex == -1)
+        {
+            __int8 Index = BoolSettings.size();
+            self.Add(IniSetting, IniElementV3(IniElementType::VoidVal, Index));
+            return true;
+        }
+        return false;
+#else
+#endif
     }
 
     /// <summary>
@@ -379,7 +455,19 @@ public:
     /// <returns>bool.</returns>
     bool AddStringSetting(std::string IniSetting, std::string IniValue)
     {
+#ifdef BlazesRusAppSetting_EnableListFocusedAppSettings
         IniElementV3 elementFound = ReturnIndexIfElementExists(IniSetting);
+        if (elementFound.IniIndex == -1)
+        {
+            __int8 Index = StringSettings.size();
+            StringSettings.Add(IniValue);
+            self.Add(IniSetting, IniElementV3(IniElementType::StringVal, Index));
+            return true;
+        }
+        StringSettings.setElementAt(elementFound.IniIndex, IniValue);
+        return false;
+#else
+#endif
     }
 
 #ifdef BlazesRusAppSetting_EnableListFocusedAppSettings
@@ -766,7 +854,7 @@ public:
                             else if (TypeName == "Float")
                                 AddFloatSetting(IniSetting, IniValue);
 #endif
-#ifdef BlazesMFCAppIni_EnableVoid
+#ifndef BlazesMFCAppIni_DisableVoid
                             else if (TypeName == "Void")
                                 AddVoidSetting(IniSetting);
 #endif                    
@@ -835,7 +923,7 @@ public:
                     else if (TypeName == "Float")
                         AddFloatSetting(IniSetting, IniValue);
 #endif
-#ifdef BlazesMFCAppIni_EnableVoid
+#ifndef BlazesMFCAppIni_DisableVoid
                     else if (TypeName == "Void")
                         AddVoidSetting(IniSetting);
 #endif                    

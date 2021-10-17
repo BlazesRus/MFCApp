@@ -1,14 +1,11 @@
-// ***********************************************************************
-// Code Created by James Michael Armstrong (https://github.com/BlazesRus)
-// Latest Code Release at https://github.com/BlazesRus/MFCApp under MIT licease
-// (MainProject this is submodule to at https://github.com/BlazesRus/BlazesRusSharedCode)
-// ***********************************************************************
+
+// MFCFrame.h : interface of the MFCFrame class
+//
+
 #pragma once
 #ifdef BlazesMFCApp_EnableOutputWindow
 #include "OutputWnd.h"
 #endif
-
-#include "../OtherFunctions/MFCMacrosV3.h"
 
 class MFCFrame
 #ifdef BlazesMFCApp_UseSDI
@@ -17,9 +14,6 @@ class MFCFrame
 : public CMDIFrameWndEx
 #endif
 {
-protected: // create from serialization only
-    MFCFrame() noexcept;
-/*
 #ifdef BlazesMFCApp_UseSDI
 protected: // create from serialization only
     MFCFrame() noexcept;
@@ -29,7 +23,7 @@ protected: // create from serialization only
 public:
     MFCFrame() noexcept;
 #endif
-*/
+
 // Attributes
 public:
 
@@ -50,34 +44,20 @@ public:
 
 protected:  // control bar embedded members
     CToolBar          m_wndToolBar;
-    CStatusBar        m_wndStatusBar;
     CReBar            m_wndReBar;
     CDialogBar        m_wndDlgBar;
+    CStatusBar        m_wndStatusBar;
 #ifdef BlazesMFCApp_EnableOutputWindow
     OutputWnd        m_wndOutput;
-#endif
-
-#ifdef BlazesMFCApp_EnableOutputWindow
-    BOOL CreateOutputWindows();
 #endif
 
 // Generated message map functions
 protected:
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-
-#ifdef BlazesMFCApp_UseSDI
-    MFC_RuntimeExtPart01(MFCFrame, CFrameWnd)
-    //Any message map messages here
-    MFC_RuntimeExtPart02()
-    MFC_RuntimeExtClassName(MFCFrame)
-#else
-    MFC_RuntimeExtPart01(AppProcesser, CMDIFrameWndEx)
-    //Any message map messages here
-    MFC_RuntimeExtPart02()
-    MFC_RuntimeExtClassName(AppProcesser)
+    DECLARE_MESSAGE_MAP()
+#ifdef BlazesMFCApp_EnableOutputWindow
+    BOOL CreateOutputWindows();
 #endif
 };
 
-MFC_RuntimeImplimentation(MFCFrame)
-MFC_RuntimeClassImplimentation(MFCFrame)
 

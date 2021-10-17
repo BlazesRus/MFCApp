@@ -54,6 +54,14 @@ public:
     /// </summary>
     std::string AppDirectory;
 
+    /// <summary>
+    /// The local Application INI Storage
+    /// </summary>
+    AppSettings AppSettingsData;
+
+    /// <summary>
+    /// Storages string for other local App based data(instead of storing window information in registry etc)
+    /// </summary>
     CString AppIniProfile;
 #endif
 

@@ -131,6 +131,38 @@
   <PropertyGroup Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)MFCSDI\$(Configuration)\</OutDir>
+    <IntDir>MFCSDI\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)MFCSDI\$(Configuration)\</OutDir>
+    <IntDir>MFCSDI\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VS2022Debug|Win32'">
+    <OutDir>$(SolutionDir)MFCSDI\$(Configuration)\</OutDir>
+    <IntDir>MFCSDI\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VS2022Release|Win32'">
+    <OutDir>$(SolutionDir)MFCSDI\$(Configuration)\</OutDir>
+    <IntDir>MFCSDI\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)MFCSDI\$(Configuration)\</OutDir>
+    <IntDir>MFCSDI\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)MFCSDI\$(Configuration)\</OutDir>
+    <IntDir>MFCSDI\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VS2022Debug|x64'">
+    <OutDir>$(SolutionDir)MFCSDI\$(Configuration)\</OutDir>
+    <IntDir>MFCSDI\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VS2022Release|x64'">
+    <OutDir>$(SolutionDir)MFCSDI\$(Configuration)\</OutDir>
+    <IntDir>MFCSDI\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Label="Windows Item Definition Group">
     <!-- Condition="'$(Platform)'=='Win32' Or '$(Platform)'=='x64'"-->
     <ClCompile>

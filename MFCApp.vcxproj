@@ -77,30 +77,6 @@
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <!-- 142 for VS2019(Default);143 for VS2022-->
-  <PropertyGroup Condition="'$(Configuration)'!='VS2022Debug' And '$(Configuration)'!='VS2022Release'" Label="Configuration">
-    <!-- And '$(Platform)'!='Release|ARM64' And '$(Platform)'!='Release|ARM'-->
-    <PlatformToolset>v142</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='VS2022Debug' Or '$(Configuration)'=='VS2022Release'" Label="Configuration">
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <WholeProgramOptimization>false</WholeProgramOptimization>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'" Label="Release Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-  </PropertyGroup>
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="Shared">
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <BlazesSharedCode Condition="Exists('C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode')">C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode</BlazesSharedCode>
     <BlazesSharedCode Condition="!Exists('C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode')">..</BlazesSharedCode>
@@ -115,8 +91,40 @@
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(BlazesSharedCode);</IncludePath>
-	<PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
+  <!-- 142 for VS2019(Default);143 for VS2022-->
+  <!-- And '$(Platform)'!='Release|ARM64' And '$(Platform)'!='Release|ARM'-->
+  <!--
+  <PropertyGroup Condition="'$(Configuration)'!='VS2022Debug' And '$(Configuration)'!='VS2022Release'" Label="Configuration">
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='VS2022Debug' Or '$(Configuration)'=='VS2022Release'" Label="Configuration">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>-->
+  <PropertyGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'" Label="Release Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='VS2022Debug' Or '$(Configuration)'=='VS2022Release'" Label="Configuration">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'!='VS2022Debug' And '$(Configuration)'!='VS2022Release'" Label="Configuration">
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
@@ -181,7 +189,6 @@
     <ClInclude Include="..\Databases\ArgStringList.h" />
     <ClInclude Include="..\Databases\CustomDictionary.h" />
     <ClInclude Include="..\Databases\CustomOrderedDictionary.h" />
-
     <ClInclude Include="..\VariableLists\VariableList.h" />
     <ClInclude Include="..\VariableLists\StringVectorList.h" />
     <ClCompile Include="..\VariableLists\StringVectorList.cpp">
@@ -191,7 +198,6 @@
     <ClCompile Include="..\VariableLists\VariableTypeLists.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-
     <ClInclude Include="..\OtherFunctions\StringFunctions.h" />
     <ClCompile Include="..\OtherFunctions\StringFunctions.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -200,8 +206,8 @@
     <ClCompile Include="..\OtherFunctions\VariableConversionFunctions.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClInclude Include="..\OtherFunctions\FileOps.hpp" />
     <ClInclude Include="..\AltNum\MediumDec.h" />
-
     <ClInclude Include="..\Databases\UIntDic.h">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClInclude>

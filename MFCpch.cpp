@@ -1,5 +1,5 @@
-// MFCpch.cpp: source file corresponding to the pre-compiled header
+//source file corresponding to the pre-compiled header
 
-#include "MFCpch.h"
+#include "MFCHeader.h"
+#include MfcPrecompileFile//#include "MFCpch.h"
 
-// When you are using precompiled headers, this source file is necessary for compilation to succeed.

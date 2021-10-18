@@ -1,8 +1,8 @@
 
 // MFCSubFrame.cpp : implementation of the MFCSubFrame class
-//
+//#include "MFCHeader.h"
+#include MfcPrecompileFile//#include "MFCpch.h"
 
-#include "MFCpch.h"
 #include "MFCFramework.h"
 #include "MFCApp.h"
 

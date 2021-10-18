@@ -78,8 +78,17 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="UserMacros">
-    <BlazesSharedCode Condition="Exists('C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode')">C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode</BlazesSharedCode>
+    <BlazesSharedCode Condition="Exists('C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode')">C:/UserFiles/GitHub/BlazesRusSharedCode/SharedCode/</BlazesSharedCode>
     <BlazesSharedCode Condition="!Exists('C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode')">..</BlazesSharedCode>
+    <MFCApp Condition="'$(BlazesSharedCode)'!='..'">$(BlazesSharedCode)MFCApp/</MFCApp>
+    <MFCApp Condition="'$(BlazesSharedCode)'=='..'">
+    </MFCApp>
+    <MfcPCHHeader Condition="'$(BlazesSharedCode)'!='..'">$(MFCApp)MFCpch.h</MfcPCHHeader>
+    <MfcPCHHeader Condition="'$(BlazesSharedCode)'=='..'">MFCpch.h</MfcPCHHeader>
+    <MfcPCHOutput Condition="'$(BlazesSharedCode)'!='..'">$(MFCApp)Release/MFCpch.pch</MfcPCHOutput>
+    <MfcPCHOutput Condition="'$(BlazesSharedCode)'=='..'">.\Release\MFCpch.pch</MfcPCHOutput>
+    <RawMfcPCH>$(MfcPCHHeader)</RawMfcPCH>
+    <MfcHeader>$(MFCApp)MFCpch.h</MfcHeader><!--Need to force absolute path so that files in other directories can use the header;Otherwise causes C1010 error inside $(BlazesSharedCode) files-->
     <MFC>C:\UserFiles\GitHub\MFC</MFC>
     <BoostDir>C:/UserFiles/ProgrammingLibraries/BoostLib/</BoostDir>
     <ParallelMap>C:/UserFiles/GitHub/Parallel-Hashmap/</ParallelMap>
@@ -94,15 +103,6 @@
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <!-- 142 for VS2019(Default);143 for VS2022-->
-  <!-- And '$(Platform)'!='Release|ARM64' And '$(Platform)'!='Release|ARM'-->
-  <!--
-  <PropertyGroup Condition="'$(Configuration)'!='VS2022Debug' And '$(Configuration)'!='VS2022Release'" Label="Configuration">
-    <PlatformToolset>v142</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='VS2022Debug' Or '$(Configuration)'=='VS2022Release'" Label="Configuration">
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>-->
   <PropertyGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <WholeProgramOptimization>false</WholeProgramOptimization>
@@ -113,9 +113,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='VS2022Debug' Or '$(Configuration)'=='VS2022Release'" Label="Configuration">
     <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'!='VS2022Debug' And '$(Configuration)'!='VS2022Release'" Label="Configuration">
-    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -137,8 +134,8 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">true</FunctionLevelLinking>
       <IntrinsicFunctions Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">true</IntrinsicFunctions>
-      <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'">MFCApp_UseIniTesterSettings;BlazesMFCApp_EnableOutputWindow;WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">MFCApp_UseIniTesterSettings;BlazesMFCApp_EnableOutputWindow;NDEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'">MFCApp_UseIniTesterSettings;BlazesMFCApp_EnableOutputWindow;MfcPCHFile=$(RawMfcPCH);WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">MFCApp_UseIniTesterSettings;BlazesMFCApp_EnableOutputWindow;MfcPCHFile=$(RawMfcPCH);NDEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">true</ConformanceMode>
       <RuntimeLibrary Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'">MultiThreadedDebugDLL</RuntimeLibrary>
@@ -146,13 +143,14 @@
       <Optimization Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">MaxSpeed</Optimization>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>MFCpch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\Release\MFCpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile>$(MfcPCHHeader)</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(MfcPCHOutput)</PrecompiledHeaderOutputFile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <OmitFramePointers Condition="'$(Platform)'=='Win32'">true</OmitFramePointers>
       <ProgramDataBaseFileName Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'">.\Debug\</ProgramDataBaseFileName>
       <ProgramDataBaseFileName Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">.\Release\</ProgramDataBaseFileName>
+      <ForcedIncludeFiles>$(MfcHeader)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem Condition="'$(Platform)'=='Win32'">MachineX86</SubSystem>
@@ -213,11 +211,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <BuildMacro Include="RawMfcPCH">
+      <Value>$(RawMfcPCH)</Value>
+    </BuildMacro>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="AboutDlg.hpp" />
     <ClInclude Include="AppSettings.h" />
     <ClInclude Include="MFCFramework.h" />
     <ClInclude Include="MFCDoc.h" />
     <ClInclude Include="MFCFrame.h" />
+    <ClInclude Include="MFCHeader.h" />
     <ClInclude Include="MFCSubFrame.h">
     </ClInclude>
     <ClInclude Include="MFCView.h" />
@@ -233,7 +237,7 @@
     <ClCompile Include="MFCView.cpp" />
     <ClCompile Include="MFCpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>MFCpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>$(MfcPCHHeader)</PrecompiledHeaderFile>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

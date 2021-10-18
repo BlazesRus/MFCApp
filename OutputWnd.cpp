@@ -1,6 +1,5 @@
-
-#include "MFCpch.h"
-#include "MFCFramework.h"
+//#include "MFCHeader.h"
+#include MfcPrecompileFile//#include "MFCpch.h"
 
 #include "OutputWnd.h"
 #include "MFCRes.h"

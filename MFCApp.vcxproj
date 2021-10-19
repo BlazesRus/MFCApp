@@ -91,7 +91,6 @@
     <MfcPCHOutput Condition="'$(BlazesSharedCode)'=='..'">.\$(Configuration)\MFCpch.pch</MfcPCHOutput>
     <RawMfcPCH>$(MfcPCHHeader)</RawMfcPCH>
     <MfcHeader>$(MFCApp)MFCHeader.h</MfcHeader>
-    <!--Need to force absolute path so that files in other directories can use the header;Otherwise causes C1010 error inside $(BlazesSharedCode) files-->
     <MFC>C:\UserFiles\GitHub\MFC</MFC>
     <BoostDir>C:/UserFiles/ProgrammingLibraries/BoostLib/</BoostDir>
     <ParallelMap>C:/UserFiles/GitHub/Parallel-Hashmap/</ParallelMap>

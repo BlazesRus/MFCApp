@@ -29,17 +29,19 @@
 #include "../OtherFunctions/MFCMacrosV3.h"
 #include "../OtherFunctions/MFCOneArgMacros.h"
 
+#ifdef BlazesMFCApp_UseDefaultAppSettings
 #include "AppSettings.h"
+#endif
 
 /// <summary>
 /// MFC based template for generating applications with a single view (Use AppProcesser.h to generate Application with default generic view type)
 /// </summary>
+#ifdef BlazesMFCApp_UseDefaultAppSettings
 template <typename ViewType>
-#ifdef BlazesMFCApp_UseSDI
-class MFCApp : public CWinApp
 #else
-class MFCApp : public CWinApp//Or CWinAppEx if can disable all registry saves
+template <typename ViewType,typename AppSettingsType>
 #endif
+class MFCApp : public CWinApp
 {
 protected:
     std::string RetrieveAppDirectoryLocation()
@@ -54,10 +56,17 @@ public:
     /// </summary>
     std::string AppDirectory;
 
+#ifndef BlazesMFCApp_DisableAppSettings
     /// <summary>
     /// The local Application INI Storage
     /// </summary>
-    AppSettings AppSettingsData;
+#ifdef BlazesMFCApp_UseDefaultAppSettings
+    AppSettings
+#else
+	AppSettingsType
+#endif
+	AppSettingsData;
+#endif
 
     /// <summary>
     /// Storages string for other local App based data(instead of storing window information in registry etc)
@@ -72,33 +81,35 @@ public:
         SetAppID(_T("MFCApp.AppID.NoVersion"));
         //m_bSaveState = FALSE;//Turns off some registry saving (only from CWinAppEx derived class)
         AppDirectory = RetrieveAppDirectoryLocation();
+#ifndef BlazesMFCApp_DisableAppSettings
         AppSettingsData.IniFilePath = AppDirectory + "AppSettings.ini";
+#endif
     }
 
 // Overrides
 public:
-#ifndef BlazesMFCApp_UseRegistryStorage
 /*
+#ifndef BlazesMFCApp_UseRegistryStorage
     virtual BOOL SaveState(LPCTSTR lpszSectionName = NULL, CFrameImpl* pFrameImpl = NULL)
     {
         AppSettingsData.Save();
-        return true;//CWinAppEx::SaveState(lpszSectionName, pFrameImpl); //Debug Assertion Failure here(MFC/afxregpath.cpp line 33)
+        return CWinApp::SaveState(&lpszSectionName, &pFrameImpl); //Debug Assertion Failure here(MFC/afxregpath.cpp line 33)
     }
     virtual BOOL LoadState(LPCTSTR lpszSectionName = NULL, CFrameImpl* pFrameImpl = NULL)
     {
         AppSettingsData.Load();
-        return true;//CWinAppEx::LoadState(lpszSectionName, pFrameImpl);//Unhandled exception on CWinAppEx::LoadState
+        return CWinAppEx::LoadState(&lpszSectionName, &pFrameImpl);//Unhandled exception on CWinAppEx::LoadState
     }
     virtual BOOL LoadWindowPlacement(CRect& rectNormalPosition, int& nFflags, int& nShowCmd)
     {
-        return true;//CWinAppEx::LoadWindowPlacement(rectNormalPosition, nFflags, nShowCmd);
+        return CWinApp::LoadWindowPlacement(rectNormalPosition, nFflags, nShowCmd);
     }
     virtual BOOL StoreWindowPlacement(const CRect& rectNormalPosition, int nFflags, int nShowCmd)
     {
-        return true;//CWinAppEx::StoreWindowPlacement(rectNormalPosition, nFflags, nShowCmd);
+        return CWinApp::StoreWindowPlacement(rectNormalPosition, &nFflags, &nShowCmd);
     }
-*/
 #endif
+*/
     /// <summary>
     /// MFCApp initialization Code
     /// </summary>
@@ -114,11 +125,7 @@ public:
         InitCtrls.dwICC = ICC_WIN95_CLASSES;
         InitCommonControlsEx(&InitCtrls);
 
-#ifdef BlazesMFCApp_UseSDI
         CWinApp::InitInstance();
-#else
-        CWinApp::InitInstance();//Or CWinAppEx::InitInstance();
-#endif
 
 #ifdef BlazesMFCApp_UseSDI
         EnableTaskbarInteraction(FALSE);
@@ -137,7 +144,9 @@ public:
         SetRegistryKey(_T("MFCApp"));// TODO: You should modify this string to be something appropriate(such as the name of your company or organization)
         LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
 #else//Portable non-registry storage variant(localOnly Profile settings including last file storage)
+#ifndef BlazesMFCApp_DisableAppSettings
         AppSettingsData.Load();
+#endif
         //Fix for forcing to not use registry based on https://forums.codeguru.com/showthread.php?458625-MFC-How-to-NOT-use-the-registry
         AppIniProfile = AppDirectory.c_str();
         AppIniProfile += _T("\\AppProfile.ini");

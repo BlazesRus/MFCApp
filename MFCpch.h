@@ -6,7 +6,9 @@
 #ifndef PCH_H
 #define PCH_H
 
-#include "MFCHeader.h"//Generates "MFCpch.h" file String for to enable absolute path reference of PCH file to enable multiple precompiled header files when using in other projects
+//Generates "MFCpch.h" file String for to enable absolute path reference of PCH file to enable multiple precompiled header files when using in other projects
+#include "../FileReferenceMacros/FileReferenceMacros.h"
+#define MfcPrecompileFile   MacroToString(MfcPCHFile)//Referencing "MFCpch.h" file
 
 // add headers that you want to be precompiled here
 #include "MFCFramework.h"

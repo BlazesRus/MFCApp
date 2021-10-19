@@ -78,17 +78,20 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="UserMacros">
-    <BlazesSharedCode Condition="Exists('C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode')">C:/UserFiles/GitHub/BlazesRusSharedCode/SharedCode/</BlazesSharedCode>
-    <BlazesSharedCode Condition="!Exists('C:\UserFiles\GitHub\BlazesRusSharedCode\SharedCode')">..</BlazesSharedCode>
+    <GithubFolder Condition="Exists('C:/UserFiles/GitHub/')">C:/UserFiles/GitHub/</GithubFolder>
+    <GithubFolder Condition="!Exists('C:/UserFiles/GitHub/')">../..</GithubFolder>
+    <!--BlazesSharedCode macro referering to C++ folder of BlazesSharedCode-->
+    <BlazesSharedCode Condition="Exists('C:/UserFiles/GitHub/BlazesRusSharedCode/SharedCode')">$(GithubFolder)/BlazesRusSharedCode/SharedCode/</BlazesSharedCode>
+    <BlazesSharedCode Condition="!Exists('C:/UserFiles/GitHub/BlazesRusSharedCode/SharedCode')">..</BlazesSharedCode>
     <MFCApp Condition="'$(BlazesSharedCode)'!='..'">$(BlazesSharedCode)MFCApp/</MFCApp>
-    <MFCApp Condition="'$(BlazesSharedCode)'=='..'">
-    </MFCApp>
-    <MfcPCHHeader Condition="'$(BlazesSharedCode)'!='..'">$(MFCApp)MFCpch.h</MfcPCHHeader>
+    <MFCApp Condition="'$(BlazesSharedCode)'=='..'">.\MFCApp\</MFCApp>
+    <MfcPCHHeader>$(MFCApp)MFCpch.h</MfcPCHHeader>
     <MfcPCHHeader Condition="'$(BlazesSharedCode)'=='..'">MFCpch.h</MfcPCHHeader>
     <MfcPCHOutput Condition="'$(BlazesSharedCode)'!='..'">$(MFCApp)$(Configuration)/MFCpch.pch</MfcPCHOutput>
     <MfcPCHOutput Condition="'$(BlazesSharedCode)'=='..'">.\$(Configuration)\MFCpch.pch</MfcPCHOutput>
     <RawMfcPCH>$(MfcPCHHeader)</RawMfcPCH>
-    <MfcHeader>$(MFCApp)MFCpch.h</MfcHeader><!--Need to force absolute path so that files in other directories can use the header;Otherwise causes C1010 error inside $(BlazesSharedCode) files-->
+    <MfcHeader>$(MFCApp)MFCHeader.h</MfcHeader>
+    <!--Need to force absolute path so that files in other directories can use the header;Otherwise causes C1010 error inside $(BlazesSharedCode) files-->
     <MFC>C:\UserFiles\GitHub\MFC</MFC>
     <BoostDir>C:/UserFiles/ProgrammingLibraries/BoostLib/</BoostDir>
     <ParallelMap>C:/UserFiles/GitHub/Parallel-Hashmap/</ParallelMap>
@@ -150,7 +153,6 @@
       <OmitFramePointers Condition="'$(Platform)'=='Win32'">true</OmitFramePointers>
       <ProgramDataBaseFileName Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'">.\Debug\</ProgramDataBaseFileName>
       <ProgramDataBaseFileName Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">.\Release\</ProgramDataBaseFileName>
-      <ForcedIncludeFiles>$(MfcHeader)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem Condition="'$(Platform)'=='Win32'">MachineX86</SubSystem>
@@ -175,6 +177,7 @@
   </ItemDefinitionGroup>
   <ItemGroup Label="SharedCodeIncludes">
     <ClInclude Include="..\DLLAPI.h" />
+    <ClInclude Include="..\FileReferenceMacros\FileReferenceMacros.h" />
     <ClInclude Include="..\OtherFunctions\MFCMacros.h" />
     <ClInclude Include="..\OtherFunctions\MFCMacrosV3.h" />
     <ClInclude Include="..\OtherFunctions\MFCBaseOneMacros.h" />
@@ -221,7 +224,6 @@
     <ClInclude Include="MFCFramework.h" />
     <ClInclude Include="MFCDoc.h" />
     <ClInclude Include="MFCFrame.h" />
-    <ClInclude Include="MFCHeader.h" />
     <ClInclude Include="MFCSubFrame.h">
     </ClInclude>
     <ClInclude Include="MFCView.h" />
@@ -230,12 +232,20 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MFCDoc.cpp" />
-    <ClCompile Include="MFCFrame.cpp" />
-    <ClCompile Include="MFCSubFrame.cpp">
+    <ClCompile Include="MFCDoc.cpp">
+      <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
     </ClCompile>
-    <ClCompile Include="MFCView.cpp" />
+    <ClCompile Include="MFCFrame.cpp">
+      <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="MFCSubFrame.cpp">
+      <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="MFCView.cpp">
+      <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
+    </ClCompile>
     <ClCompile Include="MFCpch.cpp">
+      <ForcedIncludeFiles>$(MfcHeader)</ForcedIncludeFiles>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>$(MfcPCHHeader)</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(MfcPCHOutput)</PrecompiledHeaderOutputFile>
@@ -243,18 +253,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MFCApp.h" />
-    <ClCompile Include="MFCApp.cpp" />
+    <ClCompile Include="MFCApp.cpp">
+      <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
+    </ClCompile>
     <ClInclude Include="AppProcessing.h">
       <ExcludedFromBuild>false</ExcludedFromBuild>
     </ClInclude>
     <ClCompile Include="AppProcessing.cpp">
       <ExcludedFromBuild>false</ExcludedFromBuild>
+      <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
     </ClCompile>
     <ClInclude Include="OutputWnd.h">
       <ExcludedFromBuild>false</ExcludedFromBuild>
     </ClInclude>
     <ClCompile Include="OutputWnd.cpp">
       <ExcludedFromBuild>false</ExcludedFromBuild>
+      <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

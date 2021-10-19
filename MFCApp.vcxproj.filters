@@ -108,7 +108,7 @@
     <ClCompile Include="..\VariableLists\VariableTypeLists.cpp">
       <Filter>OtherSharedCode</Filter>
     </ClCompile>
-    <ClInclude Include="MFCHeader.h">
+    <ClInclude Include="..\FileReferenceMacros\FileReferenceMacros.h">
       <Filter>MFCMacros</Filter>
     </ClInclude>
   </ItemGroup>

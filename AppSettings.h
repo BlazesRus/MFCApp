@@ -76,6 +76,7 @@ enum class IniElementType : __int8
     DoubleVal = 6,//Double Value(Not Implemented Right now)(if BlazesMFCAppIni_EnableDouble enabled)
 #endif
     NotFound = -1//Not Found(if searching values)
+	//HardCodedElement = 99
 };
 #endif
 
@@ -86,7 +87,7 @@ public:
     //0 = String Value Stored, 1 = Bool, 2 = Int, 3 = MediumDec(if BlazesMFCAppIni_EnableAltNum enabled), 4 = float(if BlazesMFCAppIni_EnableFloat enabled), 5 = Void(No Parameters), 6=AltDec
     //-1 = Not Found(if searching values)
     IniElementType IniTypeStored;
-    //If -1, then IniIndex not set yet
+    //If -1, then IniIndex not set yet when searching if it's found
     __int8 IniIndex;
     IniElementV3(IniElementType typeStored, __int8 index)
     {
@@ -110,6 +111,14 @@ public:
 /// </summary>
 class DLL_API AppSettings
 {
+/*
+#if defined(BlazesRusAppSetting_EnableListFocusedAppSettings) || defined(BlazesRusAppSetting_EnableMapFocusedAppSettings)
+protected:
+	class IniEntry
+	{
+		IniElementType
+	};
+*/
 public:
     std::string IniFilePath="";
 #ifdef BlazesRusAppSetting_EnableListFocusedAppSettings
@@ -163,44 +172,6 @@ public:
     }
 
 #elif BlazesRusAppSetting_EnableMapFocusedAppSettings
-/*  //LNK2005 error causes by these static definitions when used in MFC Applications
-
-    /// <summary>
-    /// The int declaration
-    /// </summary>
-    const static std::string IntDeclaration;
-#ifdef BlazesMFCAppIni_EnableAltNum
-    /// <summary>
-    /// The medium decimal declaration
-    /// </summary>
-    const static std::string MediumDecDeclaration;
-#endif
-    /// <summary>
-    /// The bool declaration
-    /// </summary>
-    const static std::string BoolDeclaration;
-    /// <summary>
-    /// The Void declaration(No Parameter Value)
-    /// </summary>
-    const static std::string VoidDeclaration;
-#ifdef BlazesMFCAppIni_EnableFloat
-    /// <summary>
-    /// The float declaration
-    /// </summary>
-    const static std::string FloatDeclaration;
-#endif
-
-//Below Declarations inside header file
-//const std::string AppSettings::BoolDeclaration = "#Bool";
-//const std::string AppSettings::IntDeclaration = "#Int";
-//const std::string AppSettings::VoidDeclaration = "#Void";
-//#ifdef BlazesMFCAppIni_EnableAltNum
-//const std::string AppSettings::MediumDecDeclaration = "#MediumDec";
-//#endif
-//#ifdef BlazesMFCAppIni_EnableFloat
-//const std::string AppSettings::FloatDeclaration = "#Float";
-*/
-
     /// <summary>
     /// The IniSettings with Int Values
     /// </summary>
@@ -833,8 +804,13 @@ public:
                         {
                             CommandStage = 0;
 #ifdef MFCApp_UseIniTesterSettings
+#ifdef BlazesRusAppSetting_SaveBoolAsString
                             if (IniSetting == "AppSetting01")
                                 AppSetting01 = IniValue == "true" ? true : false;
+#else
+                            if (IniSetting == "AppSetting01")
+                                AppSetting01 = IniValue == "1" ? true : false;
+#endif
 #if !defined(BlazesRusAppSetting_EnableListFocusedAppSettings) && !defined(BlazesRusAppSetting_EnableMapFocusedAppSettings)
                             else
                                 std::cout << "Unknown setting named " + IniSetting + " not loaded from AppSettings.ini." << std::endl;
@@ -903,8 +879,13 @@ public:
                     IniValue = builder;
                     builder.clear();
 #ifdef MFCApp_UseIniTesterSettings
+#ifdef BlazesRusAppSetting_SaveBoolAsString
                     if (IniSetting == "AppSetting01")
                         AppSetting01 = IniValue == "true" ? true : false;
+#else
+                    if (IniSetting == "AppSetting01")
+                        AppSetting01 = IniValue == "1" ? true : false;
+#endif
 #if !defined(BlazesRusAppSetting_EnableListFocusedAppSettings) && !defined(BlazesRusAppSetting_EnableMapFocusedAppSettings)
                     else
                         std::cout << "Unknown setting named " + IniSetting + " not loaded from AppSettings.ini." << std::endl;
@@ -995,10 +976,20 @@ public:
             if (LoadedFileStream.good())
             {//Saving to file now
 #ifndef MFCApp_SaveFreshConfigFile
-                if (LoadingExistingFile)
+                if (LoadingExistingFile)//Only Edit Values in Ini that are different from already loaded values
                 {
-#ifdef MFCApp_StoreDynamicAppSettings
-
+					std::string LineData;
+					std::string IniSetting = "";
+					std::string IniValue = "";
+					//byte InsideComment = 0;
+			#if defined(BlazesRusAppSetting_EnableListFocusedAppSettings) || defined(BlazesRusAppSetting_EnableMapFocusedAppSettings)
+					std::string TypeName = "";
+					bool InsideTypeDeclaration = false;
+			#endif
+					std::string builder = "";
+			#ifdef MFCApp_UseOldIniDataFormatForSettings
+					bool InsideParenthesis = false;
+					int CommandStage = 0;
 #endif
 
                 }
@@ -1008,27 +999,39 @@ public:
 #ifdef MFCApp_UseOldIniDataFormatForSettings//[IniSetting=IniValue]
 #ifdef MFCApp_UseIniTesterSettings
                     LoadedFileStream << "[AppSetting01=";
+#ifdef BlazesRusAppSetting_SaveBoolAsString
                     if (AppSetting01)
                         LoadedFileStream << "true";
                     else
                         LoadedFileStream << "false";
+#else
+                    if (AppSetting01)
+                        LoadedFileStream << "1";
+                    else
+                        LoadedFileStream << "0";
+#endif
                     LoadedFileStream << "]\n";
 #endif
 #else//IniSetting:IniValue;
 #ifdef MFCApp_UseIniTesterSettings
                     LoadedFileStream << "AppSetting01:";
+#ifdef BlazesRusAppSetting_SaveBoolAsString
                     if (AppSetting01)
                         LoadedFileStream << "true";
                     else
                         LoadedFileStream << "false";
+#else
+                    if (AppSetting01)
+                        LoadedFileStream << "1";
+                    else
+                        LoadedFileStream << "0";
+#endif
                     LoadedFileStream << ";\n";
 #endif
 #endif
-#ifdef MFCApp_StoreDynamicAppSettings
+#if defined(BlazesRusAppSetting_EnableListFocusedAppSettings) || defined(BlazesRusAppSetting_EnableMapFocusedAppSettings)
                     if (!self.empty())
                     {
-#if defined(BlazesRusAppSetting_StoreDynamicSettingsInList)
-#else
 /*                      //To-Do Fix this code later
                         LineString = self.ElementAt(0);
                         StringLength = LineString.length();
@@ -1050,7 +1053,6 @@ public:
                             }
                         }
 */
-#endif
                     }
 #endif
 #ifndef MFCApp_SaveFreshConfigFile

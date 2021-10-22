@@ -132,10 +132,10 @@
   <ItemDefinitionGroup Label="Windows Item Definition Group">
     <!-- Condition="'$(Platform)'=='Win32' Or '$(Platform)'=='x64'"-->
     <ClCompile>
-	  <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'">MFCApp_UseIniTesterSettings;BlazesMFCApp_EnableOutputWindow;MfcPCHFile=$(RawMfcPCH);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">true</FunctionLevelLinking>
       <IntrinsicFunctions Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">true</IntrinsicFunctions>
+	  <PreprocessorDefinitions>MFCApp_UseIniTesterSettings;BlazesMFCApp_EnableOutputWindow;MfcPCHFile=$(RawMfcPCH);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='VS2022Debug'">WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='VS2022Release'">NDEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
@@ -244,7 +244,7 @@
       <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="MFCpch.cpp">
-	  <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>$(MfcPCHHeader)</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(MfcPCHOutput)</PrecompiledHeaderOutputFile>
@@ -255,10 +255,10 @@
     <ClCompile Include="MFCApp.cpp">
       <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
     </ClCompile>
-    <ClInclude Include="AppProcessing.h">
+    <ClInclude Include="AppProcesser.h">
       <ExcludedFromBuild>false</ExcludedFromBuild>
     </ClInclude>
-    <ClCompile Include="AppProcessing.cpp">
+    <ClCompile Include="AppProcesser.cpp">
       <ExcludedFromBuild>false</ExcludedFromBuild>
       <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
     </ClCompile>

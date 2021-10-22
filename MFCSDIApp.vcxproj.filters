@@ -39,10 +39,10 @@
     <ClCompile Include="MFCApp.cpp">
       <Filter>ProcessingThread</Filter>
     </ClCompile>
-    <ClInclude Include="AppProcessing.h">
+    <ClInclude Include="AppProcesser.h">
       <Filter>ProcessingThread</Filter>
     </ClInclude>
-    <ClCompile Include="AppProcessing.cpp">
+    <ClCompile Include="AppProcesser.cpp">
       <Filter>ProcessingThread</Filter>
     </ClCompile>
     <ClInclude Include="AboutDlg.hpp">

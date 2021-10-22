@@ -273,10 +273,10 @@
   <ItemGroup>
     <ClInclude Include="MFCApp.h" />
     <ClCompile Include="MFCApp.cpp" />
-    <ClInclude Include="AppProcessing.h">
+    <ClInclude Include="AppProcesser.h">
       <ExcludedFromBuild>false</ExcludedFromBuild>
     </ClInclude>
-    <ClCompile Include="AppProcessing.cpp">
+    <ClCompile Include="AppProcesser.cpp">
       <ExcludedFromBuild>false</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="OutputWnd.h">

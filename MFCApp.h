@@ -38,7 +38,7 @@
 #endif
 
 /// <summary>
-/// MFC based template for generating applications with a single view (Use AppProcesser.h to generate Application with default generic view type)
+/// MFC based template for generating applications with a single view (Use AppProcessor.h to generate Application with default generic view type)
 /// </summary>
 #if defined(BlazesMFCApp_UseDefaultAppSettings) || defined(BlazesMFCApp_DisableAppSettings) || defined(BlazesMFCApp_UseRegistryStorage)
 template <typename ViewType>

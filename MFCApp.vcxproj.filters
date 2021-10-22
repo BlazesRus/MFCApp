@@ -143,7 +143,7 @@
     <ClInclude Include="MFCApp.h">
       <Filter>ProcessingThread</Filter>
     </ClInclude>
-    <ClInclude Include="AppProcesser.h">
+    <ClInclude Include="AppProcessor.h">
       <Filter>ProcessingThread</Filter>
     </ClInclude>
     <ClInclude Include="AboutDlg.hpp">
@@ -157,7 +157,7 @@
     <ClCompile Include="MFCApp.cpp">
       <Filter>ProcessingThread</Filter>
     </ClCompile>
-    <ClCompile Include="AppProcesser.cpp">
+    <ClCompile Include="AppProcessor.cpp">
       <Filter>ProcessingThread</Filter>
     </ClCompile>
     <ClCompile Include="MFCFrame.cpp">

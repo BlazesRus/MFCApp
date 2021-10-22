@@ -255,10 +255,10 @@
     <ClCompile Include="MFCApp.cpp">
       <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
     </ClCompile>
-    <ClInclude Include="AppProcesser.h">
+    <ClInclude Include="AppProcessor.h">
       <ExcludedFromBuild>false</ExcludedFromBuild>
     </ClInclude>
-    <ClCompile Include="AppProcesser.cpp">
+    <ClCompile Include="AppProcessor.cpp">
       <ExcludedFromBuild>false</ExcludedFromBuild>
       <ForcedIncludeFiles>$(MfcPCHHeader)</ForcedIncludeFiles>
     </ClCompile>

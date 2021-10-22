@@ -27,7 +27,11 @@
 #endif
 
 #include "../OtherFunctions/MFCMacrosV3.h"
+#if defined(BlazesMFCApp_UseDefaultAppSettings) || defined(BlazesMFCApp_DisableAppSettings) || defined(BlazesMFCApp_UseRegistryStorage)
 #include "../OtherFunctions/MFCOneArgMacros.h"
+#else
+#include "../OtherFunctions/MFCTwoArgMacros.h"
+#endif
 
 #ifdef BlazesMFCApp_UseDefaultAppSettings
 #include "AppSettings.h"
@@ -36,7 +40,7 @@
 /// <summary>
 /// MFC based template for generating applications with a single view (Use AppProcesser.h to generate Application with default generic view type)
 /// </summary>
-#ifdef BlazesMFCApp_UseDefaultAppSettings
+#if defined(BlazesMFCApp_UseDefaultAppSettings) || defined(BlazesMFCApp_DisableAppSettings) || defined(BlazesMFCApp_UseRegistryStorage)
 template <typename ViewType>
 #else
 template <typename ViewType,typename AppSettingsType>
@@ -49,6 +53,9 @@ protected:
         //GetApplicationDirectory();
         return "C:\\UserFiles\\GitHub\\BlazesRusSharedCode\\SharedCode\\MFCApp\\AppSettings\\";//Placeholder
     }
+#ifdef BlazesMFCApp_UseRegistryStorage
+    virtual std::string AppRegistryName;
+#endif
 public:
 #ifndef BlazesMFCApp_UseRegistryStorage
     /// <summary>
@@ -63,9 +70,9 @@ public:
 #ifdef BlazesMFCApp_UseDefaultAppSettings
     AppSettings
 #else
-	AppSettingsType
+    AppSettingsType
 #endif
-	AppSettingsData;
+    AppSettingsData;
 #endif
 
     /// <summary>
@@ -81,8 +88,12 @@ public:
         SetAppID(_T("MFCApp.AppID.NoVersion"));
         //m_bSaveState = FALSE;//Turns off some registry saving (only from CWinAppEx derived class)
         AppDirectory = RetrieveAppDirectoryLocation();
+#ifdef BlazesMFCApp_UseRegistryStorage
+        AppRegistryName = "MFCApp";
+#else
 #ifndef BlazesMFCApp_DisableAppSettings
         AppSettingsData.IniFilePath = AppDirectory + "AppSettings.ini";
+#endif
 #endif
     }
 
@@ -141,7 +152,7 @@ public:
         // the specific initialization routines you do not need
 #ifdef BlazesMFCApp_UseRegistryStorage
     // Change the registry key under which our settings are stored
-        SetRegistryKey(_T("MFCApp"));// TODO: You should modify this string to be something appropriate(such as the name of your company or organization)
+        SetRegistryKey(_T(AppRegistryName));// TODO: You should modify this string to be something appropriate(such as the name of your company or organization)
         LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
 #else//Portable non-registry storage variant(localOnly Profile settings including last file storage)
 #ifndef BlazesMFCApp_DisableAppSettings
@@ -226,7 +237,11 @@ public:
         aboutDlg.DoModal();
     }
 
-    MFC_RuntimeExtPart01With01Args(MFCApp, ViewType, CWinAppEx)
+#if defined(BlazesMFCApp_UseDefaultAppSettings) || defined(BlazesMFCApp_DisableAppSettings) || defined(BlazesMFCApp_UseRegistryStorage)
+    MFC_RuntimeExtPart01With01Args(MFCApp, ViewType, CWinApp)
+#else
+    MFC_RuntimeExtPart01With02Args(MFCApp, ViewType, AppSettingsType, CWinApp)
+#endif
     ON_COMMAND(ID_APP_ABOUT, &MFCApp::OnAppAbout)
     // Standard file based document commands
     ON_COMMAND(ID_FILE_NEW, &CWinApp::OnFileNew)
@@ -236,8 +251,17 @@ public:
     ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinApp::OnFilePrintSetup)
 #endif
     MFC_RuntimeExtPart02()
+#if defined(BlazesMFCApp_UseDefaultAppSettings) || defined(BlazesMFCApp_DisableAppSettings) || defined(BlazesMFCApp_UseRegistryStorage)
     MFC_RuntimeExtClassNameWith01Args(MFCApp, ViewType)
+#else
+    MFC_RuntimeExtClassNameWith02Args(MFCApp, ViewType, AppSettingsType)
+#endif
 };
 
+#if defined(BlazesMFCApp_UseDefaultAppSettings) || defined(BlazesMFCApp_DisableAppSettings) || defined(BlazesMFCApp_UseRegistryStorage)
 MFC_RuntimeImplimentationWith01Args(MFCApp, ViewType)
 MFC_RuntimeClassImplimentationWith01Args(MFCApp, ViewType)
+#else
+MFC_RuntimeImplimentationWith02Args(MFCApp, ViewType, AppSettingsType)
+MFC_RuntimeClassImplimentationWith02Args(MFCApp, ViewType, AppSettingsType)
+#endif

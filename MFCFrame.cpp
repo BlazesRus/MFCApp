@@ -2,7 +2,7 @@
 // MFCFrame.cpp : implementation of the MFCFrame class
 //
 
-//#include "MFCHeader.h"
+
 #include MfcPrecompileFile//#include "MFCpch.h"
 
 #include "MFCFramework.h"

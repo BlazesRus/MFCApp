@@ -2,7 +2,7 @@
 // MFCDoc.cpp : implementation of the MFCDoc class
 //
 
-//#include "MFCHeader.h"
+
 #include MfcPrecompileFile//#include "MFCpch.h"
 
 #include "MFCFramework.h"

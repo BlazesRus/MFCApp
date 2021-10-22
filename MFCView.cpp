@@ -1,6 +1,6 @@
 
 // MFCView.cpp : implementation of the MFCView class
-//#include "MFCHeader.h"
+
 #include MfcPrecompileFile//#include "MFCpch.h"
 
 #include "MFCFramework.h"

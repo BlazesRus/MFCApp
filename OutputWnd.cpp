@@ -1,4 +1,4 @@
-//#include "MFCHeader.h"
+
 #include MfcPrecompileFile//#include "MFCpch.h"
 
 #include "OutputWnd.h"
